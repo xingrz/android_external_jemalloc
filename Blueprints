@@ -174,7 +174,7 @@ cc_library_static {
 
     cflags: common_cflags + ["-DJEMALLOC_INTEGRATION_TEST"],
 
-    include_dirs: common_c_local_includes + [
+    local_include_dirs: common_c_local_includes + [
         "test/src",
         "test/include",
     ],
