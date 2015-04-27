@@ -83,12 +83,15 @@ cc_library_static {
 
     name: "libjemalloc",
     tags: ["optional"],
+    // Temporarily disable clang build for this project:
+    // mips and arm64 do not compile with clang
+    clang: false,
 
     cflags: common_cflags,
 
     local_include_dirs: common_c_local_includes,
 
-    srcs: lib_src_files + ["android/src/je_mallinfo.c"],
+    srcs: lib_src_files,
 
     stl: "none",
 }
@@ -109,6 +112,18 @@ cc_library_static {
 
 }
 
+jemalloc_testlib_srcs = [
+    "test/src/btalloc.c",
+    "test/src/btalloc_0.c",
+    "test/src/btalloc_1.c",
+    "test/src/math.c",
+    "test/src/mtx.c",
+    "test/src/SFMT.c",
+    "test/src/test.c",
+    "test/src/thd.c",
+    "test/src/timer.c",
+]
+
 //-----------------------------------------------------------------------
 // jemalloc unit test library
 //-----------------------------------------------------------------------
@@ -124,13 +139,7 @@ cc_library_static {
         "test/include",
     ],
 
-    srcs: [
-        "test/src/math.c",
-        "test/src/mtx.c",
-        "test/src/SFMT.c",
-        "test/src/test.c",
-        "test/src/thd.c",
-    ],
+    srcs: jemalloc_testlib_srcs,
 
     whole_static_libs: ["libjemalloc_jet"],
 
@@ -145,6 +154,9 @@ unit_tests = [
     "test/unit/ckh.c",
     "test/unit/hash.c",
     "test/unit/junk.c",
+    "test/unit/junk_alloc.c",
+    "test/unit/junk_free.c",
+    "test/unit/lg_chunk.c",
     "test/unit/mallctl.c",
     "test/unit/math.c",
     "test/unit/mq.c",
@@ -152,6 +164,8 @@ unit_tests = [
     "test/unit/prof_accum.c",
     "test/unit/prof_gdump.c",
     "test/unit/prof_idump.c",
+    "test/unit/prof_reset.c",
+    "test/unit/prof_thread_name.c",
     "test/unit/ql.c",
     "test/unit/qr.c",
     "test/unit/quarantine.c",
@@ -179,13 +193,7 @@ cc_library_static {
         "test/include",
     ],
 
-    srcs: [
-        "test/src/math.c",
-        "test/src/mtx.c",
-        "test/src/SFMT.c",
-        "test/src/test.c",
-        "test/src/thd.c",
-    ],
+    srcs: jemalloc_testlib_srcs,
 
     whole_static_libs: ["libjemalloc"],
 
@@ -197,7 +205,7 @@ cc_library_static {
 integration_tests = [
     "test/integration/aligned_alloc.c",
     "test/integration/allocated.c",
-    "test/integration/chunk.c",
+    "test/integration/sdallocx.c",
     "test/integration/mallocx.c",
     "test/integration/MALLOCX_ARENA.c",
     "test/integration/posix_memalign.c",
@@ -205,4 +213,5 @@ integration_tests = [
     "test/integration/thread_arena.c",
     "test/integration/thread_tcache_enabled.c",
     "test/integration/xallocx.c",
+    "test/integration/chunk.c",
 ]
