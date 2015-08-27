@@ -1206,7 +1206,7 @@ arena_lg_dirty_mult_set(arena_t *arena, ssize_t lg_dirty_mult)
 void
 arena_maybe_purge(arena_t *arena)
 {
-
+#if !defined(ANDROID_ALWAYS_PURGE)
 	/* Don't purge if the option is disabled. */
 	if (arena->lg_dirty_mult < 0)
 		return;
@@ -1229,6 +1229,17 @@ arena_maybe_purge(arena_t *arena)
 			return;
 		arena_purge(arena, false);
 	}
+#else
+	/*
+	 * Iterate, since preventing recursive purging could otherwise leave too
+	 * many dirty pages.
+	 */
+	while (true) {
+		if (arena->ndirty == 0)
+			return;
+		arena_purge(arena, false);
+	}
+#endif
 }
 
 static size_t

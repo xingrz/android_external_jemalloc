@@ -260,6 +260,18 @@ dnl to make happen otherwise.
 default_munmap="1"
 maps_coalesce="1"
 case "${host}" in
+  *android*)
+	CFLAGS="$CFLAGS"
+	CPPFLAGS="$CPPFLAGS -D_GNU_SOURCE"
+	abi="elf"
+	force_tls="0"
+	enable_tls="0"
+	default_munmap="0"
+	AC_DEFINE([JEMALLOC_HAS_ALLOCA_H])
+	AC_DEFINE([JEMALLOC_PURGE_MADVISE_DONTNEED], [ ])
+	AC_DEFINE([JEMALLOC_THREADED_INIT], [ ])
+	AC_DEFINE([JEMALLOC_USE_CXX_THROW], [ ])
+	;;
   *-*-darwin* | *-*-ios*)
 	CFLAGS="$CFLAGS"
 	abi="macho"
