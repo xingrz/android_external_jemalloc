@@ -201,7 +201,7 @@
 /* #undef LG_QUANTUM */
 
 /* One page is 2^LG_PAGE bytes. */
-#define LG_PAGE 12
+#define LG_PAGE 14
 
 /*
  * If defined, adjacent virtual memory mappings with identical attributes
